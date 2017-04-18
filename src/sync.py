@@ -42,14 +42,7 @@ class Sync(object):
 
                     # clean local file?
                     if args._clean:
-                        try:
-                            self.s3.head_object(Bucket=self.bucket, Key=s3_dest)
-                            import os
-                            log.debug('Remove file {}'.format(kwargs['path']))
-                            os.remove(kwargs['path'])
-                        except ClientError as ex:
-                            log.debug('Not found "{}" in AWS S3.'.format(s3_dest))
-                            log.debug(repr(ex))
+                        self._remove_local_file(s3_dest, **kwargs)
 
             else:
                 log.debug('Path or File name not exist.')
@@ -68,3 +61,14 @@ class Sync(object):
     def _get_s3_destination(**kwargs):
         return '{}/{}'.format(kwargs['dirname'], kwargs['filename']) \
                         if 'dirname' in kwargs else kwargs['filename']
+
+    def _remove_local_file(self, s3_dest, **kwargs):
+        """ remove local file if it exist in S3"""
+        try:
+            self.s3.head_object(Bucket=self.bucket, Key=s3_dest)
+            import os
+            log.debug('Remove file {}'.format(kwargs['path']))
+            os.remove(kwargs['path'])
+        except ClientError as ex:
+            log.debug('Not found "{}" in AWS S3.'.format(s3_dest))
+            log.debug(repr(ex))
