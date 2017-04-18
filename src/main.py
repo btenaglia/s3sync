@@ -2,13 +2,13 @@ import os
 import logging
 from arguments import args
 from sync import Sync
+from botocore.exceptions import NoCredentialsError
 
 log = logging.getLogger('s3sync')
 
 
 def go():
-    sync = Sync()
-    sync.bucket = 'old-ri-images-example'
+    sync = _get_sync_object()
     base_dir = _get_path_to_sync()
     contents = os.listdir(base_dir)
 
@@ -33,3 +33,16 @@ def _get_path_to_sync():
         log.debug('Exit')
         exit(1)
     return args._path
+
+
+def _get_sync_object():
+    """ get sync object """
+    try:
+        sync = Sync()
+        sync.bucket = 'old-ri-images-example'
+        return sync
+    except NoCredentialsError as ex:
+        log.debug('Error to connect to Amazon. Can not found the credentials.')
+        log.debug(repr(ex))
+        log.debug('Exit')
+        exit(1)
