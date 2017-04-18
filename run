@@ -1,0 +1,10 @@
+""" Entry point """
+
+import logging
+from src import main, logger
+
+
+if __name__ == '__main__':
+    log = logging.getLogger('s3sync')
+    log.debug("Starting...")
+    main.go()
