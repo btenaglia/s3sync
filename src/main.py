@@ -19,7 +19,9 @@ def go():
             log.debug('Start to sync the folder {}'.format(element_path))
             # loop files to upload
             for _file in os.listdir(element_path):
-                sync.upload(dirname=element, path=os.path.join(element_path, _file), filename=_file)
+                # WARNING: only one level
+                if not os.path.isdir(os.path.join(element_path, _file)):
+                    sync.upload(dirname=element, path=os.path.join(element_path, _file), filename=_file)
         else:
             sync.upload(path=element_path, filename=element)
 
