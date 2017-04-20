@@ -37,13 +37,12 @@ class Sync(object):
                     log.debug('Sync file {}'.format(kwargs['path']))
                     s3_dest = self._get_s3_destination(**kwargs)
 
-                    # upload to aws s3
-                    self.s3.upload_fileobj(data, self.bucket, s3_dest)
+                    # upload to aws s3 and make it public
+                    self.s3.upload_fileobj(data, self.bucket, s3_dest, ExtraArgs={'ACL': 'public-read'})
 
                     # clean local file?
                     if args._clean:
                         self._remove_local_file(s3_dest, **kwargs)
-
             else:
                 log.debug('Path or File name not exist.')
         except IOError as ex:
