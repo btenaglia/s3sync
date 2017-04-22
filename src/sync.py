@@ -1,3 +1,4 @@
+import os
 import logging
 import boto3
 from boto3.exceptions import S3UploadFailedError
@@ -41,7 +42,7 @@ class Sync(object):
                     self.s3.upload_fileobj(data, self.bucket, s3_dest, ExtraArgs={'ACL': 'public-read'})
 
                     # clean local file?
-                    if args._clean:
+                    if args.clean:
                         self._remove_local_file(s3_dest, **kwargs)
             else:
                 log.debug('Path or File name not exist.')
@@ -65,7 +66,6 @@ class Sync(object):
         """ remove local file if it exist in S3"""
         try:
             self.s3.head_object(Bucket=self.bucket, Key=s3_dest)
-            import os
             log.debug('Remove file {}'.format(kwargs['path']))
             os.remove(kwargs['path'])
         except ClientError as ex:

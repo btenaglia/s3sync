@@ -28,18 +28,18 @@ def go():
 
 def _get_path_to_sync():
     """ check if path exist """
-    if not os.path.exists(args._path):
-        log.debug('Path "{}" not exist'.format(args._path))
+    if not os.path.exists(args.path):
+        log.debug('Path "{}" not exist'.format(args.path))
         log.debug('Exit')
         exit(1)
-    return args._path
+    return args.path
 
 
 def _get_sync_object():
     """ get sync object """
     try:
         sync = Sync()
-        sync.bucket = 'old-ri-images-example'
+        sync.bucket = args.bucket
         return sync
     except NoCredentialsError as ex:
         log.debug('Error to connect to Amazon. Can not found the credentials.')
